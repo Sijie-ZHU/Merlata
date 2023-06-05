@@ -1,0 +1,79 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    location    "0";
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Uinlet          (-3 0 0);
+dimensions      [0 1 -1 0 0 0 0];
+
+
+internalField   uniform $Uinlet;
+
+boundaryField
+{
+    
+inlet
+    {
+        type            atmBoundaryLayerInletVelocity;
+        #include        "include/ABLConditions"
+        value           uniform $Uinlet;
+    }
+    outlet
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform $Uinlet;
+		phi             phi;
+    }
+    side
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform $Uinlet;
+		phi             phi;
+    }
+    air_to_soil2
+    {
+        type            noSlip;
+    }
+    top
+    {
+    //  (HW:p. 365):
+    //  "In addition, as suggested by RH and often ignored by others, a"
+    //  "constant shear stress of rho*(u^*)^2 was applied at the top boundary."
+    //
+    //  u^* ~ Uref*kappa/ln((Zref+z0)/z0)
+    //  tau = rho*(u^*)^2 
+        type            fixedShearStress;
+        tau             (0.264993035 0 0);
+        value           uniform $Uinlet;
+    }
+    air_to_buildings
+    {
+        type            noSlip;
+    }
+	air_to_concrete
+    {
+        type            noSlip;
+    }
+	air_to_asphalt
+    {
+        type            noSlip;
+    }
+	air_to_base
+    {
+        type            noSlip;
+    }
+}
+
+
+// ************************************************************************* //

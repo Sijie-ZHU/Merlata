@@ -1,0 +1,64 @@
+#!/bin/sh
+cd "${0%/*}" || exit                                # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # Tutorial run functions
+#------------------------------------------------------------------------------
+
+# Custom script to Refine the multiple meshes
+refineMeshByCellSet()
+{
+   while [ $# -ge 1 ]
+   do
+      if [ ! -e log.refineMesh.$1 ]
+      then
+          echo "creating cell set for primary zone - $1"
+          cp system/topoSetDict.$1 system/topoSetDict
+          topoSet > log.topoSet.$1 2>&1
+
+          echo "refining primary zone - $1"
+		  cp system/refineMeshDict.$1 system/refineMeshDict
+          refineMesh -dict system/refineMeshDict -overwrite > log.refineMesh.$1 2>&1
+      fi
+      shift
+   done
+}
+
+runApplication blockMesh
+refineMeshByCellSet 1 2
+runApplication surfaceFeatureExtract
+runApplication snappyHexMesh -overwrite
+runApplication extrudeMesh 
+
+# main topoSet
+cp system/topoSetDict.0 system/topoSetDict
+
+# Select the cells with cell centre inside the surfaces
+insideCells concrete.stl concreteSet
+insideCells asphalt.stl asphaltSet
+insideCells soil2.stl soil2Set
+insideCells soil1.stl soil1Set
+
+runApplication topoSet
+runApplication splitMeshRegions -cellZonesOnly -overwrite
+
+# Remove unwanted regions
+rm -rf 0/base constant/base system/base
+rm -rf 0/buildings constant/buildings system/buildings
+# Set the initial fields
+restore0Dir
+
+# Set the vegetation cells
+myinsideCells trees.stl treeSet -region air 
+#myinsideCells grass.stl grassSet -region air 
+runApplication -s air topoSet -region air
+# Set the tree cells
+cp system/air/setFieldsDict.1 system/air/setFieldsDict
+setFields -region air > log.setFields.air1
+cp 0/air/LAD constant/air/LAD_tree
+# Set the grass cells
+cp system/air/setFieldsDict.2 system/air/setFieldsDict
+setFields -region air > log.setFields.air2
+
+
+
+touch 1.foam
+#------------------------------------------------------------------------------

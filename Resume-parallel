@@ -1,0 +1,20 @@
+#!/bin/sh
+cd "${0%/*}" || exit                                # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # Tutorial run functions
+#------------------------------------------------------------------------------
+
+# Decompose
+runApplication decomposePar -latestTime -allRegions -constant
+
+
+runParallel $(getApplication)
+#mpirun -np 4 mychtMultiRegionSimpleFoam -parallel > log.mychtMultiRegionSimpleFoam.2
+
+# Reconstruct
+runApplication reconstructPar -allRegions -latestTime
+
+echo
+echo "Use paraFoam -touch-all to create files for paraview post-processing"
+echo
+
+#------------------------------------------------------------------------------

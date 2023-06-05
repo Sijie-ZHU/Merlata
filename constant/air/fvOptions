@@ -1,0 +1,63 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      fvOptions;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+limitT
+{
+    type            limitTemperature;
+    active          yes;
+
+    selectionMode   all;
+    min             270;
+    max             460;
+}
+
+//add souce terms with customed code
+USource
+{
+    type              USource;
+	fields            (U);
+    selectionMode     all;// all, cellSet, cellZone, points
+}
+
+kSource
+{
+    type              kSource;
+	fields            (k);
+    selectionMode     all;// all, cellSet, cellZone, points
+}
+
+epsilonSource
+{
+    type              epsilonSource;
+	fields            (epsilon);
+    selectionMode     all;// all, cellSet, cellZone, points
+}	
+
+ESource
+{
+    type              ESource;
+	fields            (h);
+    selectionMode     all;// all, cellSet, cellZone, points
+}	
+
+specHumSource
+{
+    type              specHumSource;
+	fields            (specHum);
+    selectionMode     all;// all, cellSet, cellZone, points
+}	
+// ************************************************************************* //

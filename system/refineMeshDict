@@ -1,0 +1,42 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.2                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      refineMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+set             c0;
+
+coordinateSystem global;
+
+globalCoeffs
+{
+    tan1            ( 1 0 0 );
+    tan2            ( 0 1 0 );
+}
+
+directions      ( tan1 tan2 normal);
+
+// Whether to use hex topology. This will
+// - if patchLocal: all cells on selected patch should be hex
+// - split all hexes in 2x2x2 through the middle of edges.
+useHexTopology  true;
+
+// Cut purely geometric (will cut hexes through vertices) or take topology
+// into account. Incompatible with useHexTopology
+geometricCut    false;
+
+// Write meshes from intermediate steps
+writeMesh       false;
+
+// ************************************************************************* //

@@ -1,0 +1,142 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.2                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      topoSetDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+actions
+(
+    
+	{
+        name    air;
+        type    cellSet;
+        action  new;
+        source  boxToCell;
+        box     (-752 0 0)(1696 1840 464);
+    }
+    {
+        name    base;
+        type    cellSet;
+        action  new;
+        source  boxToCell;
+        box     (-752 0 -2)(1696 1840 0);
+    }
+	{
+        name    buildings;
+        type    cellZoneSet;
+        action  subtract;
+        source  setToCellZone;
+        set     base;
+    }
+    {
+        name    base;
+        type    cellSet;
+        action  subtract;
+        source  cellToCell;
+        set     concreteSet;
+    }
+	{
+        name    air;
+        type    cellSet;
+        action  subtract;
+        source  cellToCell;
+        set     buildings;
+    }
+   {
+        name    base;
+        type    cellSet;
+        action  subtract;
+        source  cellToCell;
+        set     asphaltSet;
+    }
+    {
+        name    base;
+        type    cellSet;
+        action  subtract;
+        source  cellToCell;
+        set     soil1Set;
+    }
+    {
+        name    base;
+        type    cellSet;
+        action  subtract;
+        source  cellToCell;
+        set     soil2Set;
+    }	
+	{
+        name    concreteSet;
+        type    cellSet;
+        action  subtract;
+        source  cellToCell;
+        set     asphaltSet;           
+    }
+	{
+        name    soil2Set;
+        type    cellSet;
+        action  subtract;
+        source  cellToCell;
+        set     asphaltSet;           
+    }
+	{
+        name    soil2Set;
+        type    cellSet;
+        action  subtract;
+        source  cellToCell;
+        set     concreteSet;           
+    }
+	{
+        name    concrete;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        set     concreteSet;           
+    }
+	{
+        name    asphalt;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        set     asphaltSet;           
+    }
+	{
+        name    soil2;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        set     soil2Set;           
+    }
+	{
+        name    soil1;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        set     soil1Set;           
+    }
+	{
+        name    base;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        set     base;           
+    }
+	{
+        name    air;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        set     air;           
+    }
+);
+
+// ************************************************************************* //

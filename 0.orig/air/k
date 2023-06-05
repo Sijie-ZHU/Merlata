@@ -1,0 +1,80 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      k;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+kInlet          0.9;   // approx k = 1.5*(I*U)^2 ; I = 0.1
+dimensions      [0 2 -2 0 0 0 0];
+
+
+internalField   uniform $kInlet;
+
+boundaryField
+{
+    inlet
+    {
+        type            atmBoundaryLayerInletK;
+        #include        "include/ABLConditions"
+		value           uniform $kInlet;
+    }
+    outlet
+    {
+        type            inletOutlet;
+        inletValue      uniform $kInlet;
+        value           uniform $kInlet;
+    }
+    side
+    {
+        type            inletOutlet;
+        inletValue      uniform $kInlet;
+        value           uniform $kInlet;
+    }
+   air_to_soil2
+    {
+        type            kqRWallFunction;
+	   inletValue      uniform $kInlet;
+       value           uniform $kInlet;
+    }
+    top
+    {
+        type            zeroGradient;
+    }
+    air_to_buildings
+    {
+       type            kqRWallFunction;
+	   inletValue      uniform $kInlet;
+       value           uniform $kInlet;
+    }
+	air_to_concrete
+    {
+        type            kqRWallFunction;
+	   inletValue      uniform $kInlet;
+       value           uniform $kInlet;
+    }
+	air_to_asphalt
+    {
+        type            kqRWallFunction;
+	   inletValue      uniform $kInlet;
+       value           uniform $kInlet;
+    }
+	air_to_base
+    {
+       type            kqRWallFunction;
+	   inletValue      uniform $kInlet;
+       value           uniform $kInlet;
+    }
+}
+
+
+// ************************************************************************* //

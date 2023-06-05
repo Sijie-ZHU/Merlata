@@ -1,0 +1,102 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   uniform 305.15;
+
+boundaryField
+{
+    air_to_soil2
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        value           uniform 305.15;
+        Tnbr            T;
+        kappaMethod     fluidThermo;
+        qrNbr           none;
+        qr              qr;
+        kappa           none;
+    }	
+	
+    top
+    {
+        type            inletOutlet;
+        value           $internalField;
+        inletValue      $internalField;
+    }
+    side
+    {
+        type            inletOutlet;
+        value           $internalField;
+        inletValue      $internalField;
+    }
+	inlet
+    {
+        type            inletOutlet;
+        value           $internalField;
+        inletValue      $internalField;
+    }
+
+    outlet
+    {
+        type            inletOutlet;
+        value           $internalField;
+        inletValue      $internalField;
+    }
+	
+	air_to_buildings
+    {
+        type            externalWallHeatFluxTemperature;
+ 
+        mode            coefficient;
+ 
+        Ta              constant 299.15;
+        h               constant 10.0;
+        thicknessLayers (0.3);
+        kappaLayers     (1.6);
+        kappaMethod     fluidThermo;
+		qr              qr;
+        qrRelaxation    0.02;            //Radiation relaxation
+		emissivity      0.9;
+        value           $internalField;
+    }
+	air_to_concrete
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        value           uniform 305.15;
+        Tnbr            T;
+        kappaMethod     fluidThermo;
+        qrNbr           none;
+        qr              qr;
+        kappa           none;
+    }	
+	air_to_asphalt
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        value           uniform 305.15;
+        Tnbr            T;
+        kappaMethod     fluidThermo;
+        qrNbr           none;
+        qr              qr;
+        kappa           none;
+    }
+    air_to_base
+    {
+        type            zeroGradient;
+    }	
+}
+
+// ************************************************************************* //

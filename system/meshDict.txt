@@ -1,0 +1,114 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                |
+| \\      /  F ield         | cfMesh: A library for mesh generation          |
+|  \\    /   O peration     |                                                |
+|   \\  /    A nd           | Author: Franjo Juretic                         |
+|    \\/     M anipulation  | E-mail: franjo.juretic@c-fields.com            |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version   2.0;
+    format    ascii;
+    class     dictionary;
+    location  "system";
+    object    meshDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+surfaceFile "buildings.stl";
+
+maxCellSize 16; //[m]
+minCellSize 16; //[m]
+boundaryCellSize 16; //[m]
+
+objectRefinements
+{
+    mainBox
+    {
+        type box;
+        cellSize    0.05; //[m]
+        centre   (0 0 0); //[m]
+        lengthX        3; //[m]
+        lengthY      1.0; //[m]
+        lengthZ      1.5; //[m]
+    }
+}
+
+localRefinement
+{
+
+    ahmedBody
+    {
+        additionalRefinementLevels 5;
+        refinementThickness  0.05; //[m]
+    }
+}
+
+boundaryLayers
+{
+
+    patchBoundaryLayers
+    {
+        ahmedBody
+        {
+             nLayers    5;
+             thicknessRatio     1.2;
+             allowDiscontinuity 1;
+        }
+    }
+
+    optimiseLayer 1;
+
+    optimisationParameters
+    {
+        nSmoothNormals 			5;
+        relThicknessTol 		0.4;
+        featureSizeFactor 		0.8;
+        reCalculateNormals 		1; 
+        maxNumIterations 		5;
+    }
+
+}
+
+renameBoundary
+{
+    defaultType     wall;
+
+    newPatchNames
+    {
+        "xMax"
+        {
+            newName outlet;
+            type    patch;
+        }
+        "xMin"
+        {
+            newName inlet;
+            type    patch;
+        }
+        "yMax"
+        {
+            newName top;
+            type    patch;
+        }
+        "yMin"
+        {
+            newName bottom;
+            type    patch;
+        }
+        "zMax"
+        {
+            newName side;
+            type    patch;
+        }
+        "zMin"
+        {
+            newName side;
+            type    patch;
+        }
+
+    }
+}
+
+// ************************************************************************* //
